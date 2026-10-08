@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mina 🐶</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #ffffff;
+
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let W, H;
+let tiempo = 0;
+
+function resize() {
+
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+
+}
+
+resize();
+
+window.addEventListener("resize", resize);
+
+
+// ==================================================
+// UTILIDADES
+// ==================================================
+
+function elipse(x, y, rx, ry, color, rotacion = 0) {
+
+    ctx.save();
+
+    ctx.translate(x, y);
+    ctx.rotate(rotacion);
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        0,
+        rx,
+        ry,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+function circulo(x, y, radio, color) {
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        radio,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+}
+
+
+// ==================================================
+// CORAZONES
+// ==================================================
+
+function corazon(x, y, tamaño, color, rotacion = 0) {
+
+    ctx.save();
+
+    ctx.translate(x, y);
+    ctx.rotate(rotacion);
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, tamaño * 0.8);
+
+    ctx.bezierCurveTo(
+        -tamaño * 1.2,
+        tamaño * 0.1,
+        -tamaño * 0.7,
+        -tamaño * 0.8,
+        0,
+        -tamaño * 0.25
+    );
+
+    ctx.bezierCurveTo(
+        tamaño * 0.7,
+        -tamaño * 0.8,
+        tamaño * 1.2,
+        tamaño * 0.1,
+        0,
+        tamaño * 0.8
+    );
+
+    ctx.fillStyle = color;
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+
+// ==================================================
+// MOÑO
+// ==================================================
+
+function dibujarMoño(x, y, escala) {
+
+    ctx.save();
+
+    ctx.translate(x, y);
+    ctx.scale(escala, escala);
+
+
+    // Sombra
+    ctx.globalAlpha = 0.15;
+
+    elipse(
+        -30,
+        8,
+        42,
+        30,
+        "#777",
+        -0.25
+    );
+
+    elipse(
+        30,
+        8,
+        42,
+        30,
+        "#777",
+        0.25
+    );
+
+    ctx.globalAlpha = 1;
+
+
+    // Ala izquierda
+
+    const gradIzq =
+        ctx.createLinearGradient(
+            -60,
+            -30,
+            0,
+            30
+        );
+
+    gradIzq.addColorStop(
+        0,
+        "#ff78a7"
+    );
+
+    gradIzq.addColorStop(
+        0.6,
+        "#ffabc4"
+    );
+
+    gradIzq.addColorStop(
+        1,
+        "#ff5f96"
+    );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, 0);
+
+    ctx.bezierCurveTo(
+        -25,
+        -38,
+        -65,
+        -45,
+        -70,
+        -10
+    );
+
+    ctx.bezierCurveTo(
+        -75,
+        22,
+        -35,
+        40,
+        0,
+        10
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = gradIzq;
+    ctx.fill();
+
+
+    // Ala derecha
+
+    const gradDer =
+        ctx.createLinearGradient(
+            0,
+            -30,
+            60,
+            30
+        );
+
+    gradDer.addColorStop(
+        0,
+        "#ff78a7"
+    );
+
+    gradDer.addColorStop(
+        0.6,
+        "#ffabc4"
+    );
+
+    gradDer.addColorStop(
+        1,
+        "#ff5f96"
+    );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, 0);
+
+    ctx.bezierCurveTo(
+        25,
+        -38,
+        65,
+        -45,
+        70,
+        -10
+    );
+
+    ctx.bezierCurveTo(
+        75,
+        22,
+        35,
+        40,
+        0,
+        10
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = gradDer;
+    ctx.fill();
+
+
+    // Centro del moño
+
+    const centro =
+        ctx.createRadialGradient(
+            -5,
+            -5,
+            2,
+            0,
+            0,
+            18
+        );
+
+    centro.addColorStop(
+        0,
+        "#ffd1df"
+    );
+
+    centro.addColorStop(
+        0.6,
+        "#ff78a7"
+    );
+
+    centro.addColorStop(
+        1,
+        "#e84c82"
+    );
+
+
+    circulo(
+        0,
+        5,
+        18,
+        centro
+    );
+
+
+    // Brillo
+
+    circulo(
+        -6,
+        -2,
+        4,
+        "rgba(255,255,255,0.65)"
+    );
+
+
+    ctx.restore();
+}
+
+
+// ==================================================
+// PUG
+// ==================================================
+
+function dibujarPug(cx, cy, escala) {
+
+    ctx.save();
+
+    ctx.translate(cx, cy);
+
+    ctx.scale(escala, escala);
+
+
+    // ------------------------------------------------
+    // SOMBRA
+    // ------------------------------------------------
+
+    ctx.globalAlpha = 0.15;
+
+    elipse(
+        0,
+        270,
+        180,
+        35,
+        "#777"
+    );
+
+    ctx.globalAlpha = 1;
+
+
+    // ------------------------------------------------
+    // CUERPO
+    // ------------------------------------------------
+
+    const cuerpo =
+        ctx.createLinearGradient(
+            -120,
+            20,
+            120,
+            250
+        );
+
+    cuerpo.addColorStop(
+        0,
+        "#d5a36e"
+    );
+
+    cuerpo.addColorStop(
+        0.55,
+        "#bd8655"
+    );
+
+    cuerpo.addColorStop(
+        1,
+        "#9b633f"
+    );
+
+
+    elipse(
+        0,
+        155,
+        115,
+        125,
+        cuerpo
+    );
+
+
+    // Pecho
+
+    elipse(
+        0,
+        170,
+        65,
+        90,
+        "#e8bd88"
+    );
+
+
+    // ------------------------------------------------
+    // PATAS
+    // ------------------------------------------------
+
+    elipse(
+        -75,
+        220,
+        42,
+        75,
+        "#a96f47",
+        -0.08
+    );
+
+    elipse(
+        75,
+        220,
+        42,
+        75,
+        "#a96f47",
+        0.08
+    );
+
+
+    // Patitas claras
+
+    elipse(
+        -76,
+        275,
+        39,
+        25,
+        "#d6a16e"
+    );
+
+    elipse(
+        76,
+        275,
+        39,
+        25,
+        "#d6a16e"
+    );
+
+
+    // ------------------------------------------------
+    // CABEZA
+    // ------------------------------------------------
+
+    const cara =
+        ctx.createRadialGradient(
+            -40,
+            -80,
+            20,
+            0,
+            -20,
+            170
+        );
+
+    cara.addColorStop(
+        0,
+        "#e1b47d"
+    );
+
+    cara.addColorStop(
+        0.65,
+        "#c78d5a"
+    );
+
+    cara.addColorStop(
+        1,
+        "#a96d47"
+    );
+
+
+    elipse(
+        0,
+        -25,
+        145,
+        125,
+        cara
+    );
+
+
+    // ------------------------------------------------
+    // OREJAS
+    // ------------------------------------------------
+
+    // izquierda
+
+    elipse(
+        -115,
+        -65,
+        55,
+        65,
+        "#54362f",
+        -0.45
+    );
+
+    // derecha
+
+    elipse(
+        115,
+        -65,
+        55,
+        65,
+        "#54362f",
+        0.45
+    );
+
+
+    // Interior de orejas
+
+    elipse(
+        -120,
+        -65,
+        32,
+        43,
+        "#332321",
+        -0.45
+    );
+
+    elipse(
+        120,
+        -65,
+        32,
+        43,
+        "#332321",
+        0.45
+    );
+
+
+    // ------------------------------------------------
+    // MÁSCARA OSCURA
+    // ------------------------------------------------
+
+    elipse(
+        -55,
+        -25,
+        48,
+        55,
+        "#62443a"
+    );
+
+    elipse(
+        55,
+        -25,
+        48,
+        55,
+        "#62443a"
+    );
+
+
+    // Parte central
+
+    elipse(
+        0,
+        10,
+        62,
+        70,
+        "#67463b"
+    );
+
+
+    // ------------------------------------------------
+    // OJOS
+    // ------------------------------------------------
+
+    // blanco / brillo ocular
+
+    elipse(
+        -55,
+        -40,
+        27,
+        32,
+        "#171312"
+    );
+
+    elipse(
+        55,
+        -40,
+        27,
+        32,
+        "#171312"
+    );
+
+
+    // Iris
+
+    circulo(
+        -55,
+        -40,
+        17,
+        "#211817"
+    );
+
+    circulo(
+        55,
+        -40,
+        17,
+        "#211817"
+    );
+
+
+    // Brillos
+
+    circulo(
+        -62,
+        -47,
+        7,
+        "#ffffff"
+    );
+
+    circulo(
+        48,
+        -47,
+        7,
+        "#ffffff"
+    );
+
+    circulo(
+        -50,
+        -31,
+        3,
+        "#ffffff"
+    );
+
+    circulo(
+        60,
+        -31,
+        3,
+        "#ffffff"
+    );
+
+
+    // ------------------------------------------------
+    // ARRUGAS
+    // ------------------------------------------------
+
+    ctx.strokeStyle =
+        "rgba(85,55,45,0.5)";
+
+    ctx.lineWidth = 5;
+
+    ctx.lineCap = "round";
+
+
+    // Frente
+
+    ctx.beginPath();
+
+    ctx.moveTo(-35, -80);
+    ctx.quadraticCurveTo(
+        -15,
+        -65,
+        -5,
+        -80
+    );
+
+    ctx.moveTo(5, -80);
+
+    ctx.quadraticCurveTo(
+        15,
+        -65,
+        35,
+        -80
+    );
+
+    ctx.stroke();
+
+
+    // Laterales de la cara
+
+    ctx.beginPath();
+
+    ctx.moveTo(-105, -5);
+
+    ctx.quadraticCurveTo(
+        -80,
+        10,
+        -90,
+        30
+    );
+
+    ctx.moveTo(105, -5);
+
+    ctx.quadraticCurveTo(
+        80,
+        10,
+        90,
+        30
+    );
+
+    ctx.stroke();
+
+
+    // ------------------------------------------------
+    // HOCICO
+    // ------------------------------------------------
+
+    elipse(
+        0,
+        38,
+        65,
+        48,
+        "#d19a68"
+    );
+
+
+    // ------------------------------------------------
+    // NARIZ
+    // ------------------------------------------------
+
+    const nariz =
+        ctx.createRadialGradient(
+            -10,
+            27,
+            2,
+            0,
+            40,
+            28
+        );
+
+    nariz.addColorStop(
+        0,
+        "#40302d"
+    );
+
+    nariz.addColorStop(
+        0.6,
+        "#201817"
+    );
+
+    nariz.addColorStop(
+        1,
+        "#0e0c0c"
+    );
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(-32, 30);
+
+    ctx.bezierCurveTo(
+        -25,
+        15,
+        25,
+        15,
+        32,
+        30
+    );
+
+    ctx.bezierCurveTo(
+        35,
+        50,
+        10,
+        60,
+        0,
+        60
+    );
+
+    ctx.bezierCurveTo(
+        -10,
+        60,
+        -35,
+        50,
+        -32,
+        30
+    );
+
+    ctx.fillStyle = nariz;
+    ctx.fill();
+
+
+    // Brillo nariz
+
+    elipse(
+        -10,
+        28,
+        9,
+        5,
+        "rgba(255,255,255,0.35)"
+    );
+
+
+    // ------------------------------------------------
+    // BOCA
+    // ------------------------------------------------
+
+    ctx.strokeStyle = "#432b29";
+
+    ctx.lineWidth = 4;
+
+    ctx.beginPath();
+
+    ctx.moveTo(0, 58);
+
+    ctx.lineTo(0, 72);
+
+    ctx.quadraticCurveTo(
+        -20,
+        88,
+        -38,
+        73
+    );
+
+    ctx.moveTo(0, 72);
+
+    ctx.quadraticCurveTo(
+        20,
+        88,
+        38,
+        73
+    );
+
+    ctx.stroke();
+
+
+    // ------------------------------------------------
+    // LENGÜITA
+    // ------------------------------------------------
+
+    ctx.beginPath();
+
+    ctx.moveTo(-17, 77);
+
+    ctx.quadraticCurveTo(
+        0,
+        105,
+        17,
+        77
+    );
+
+    ctx.fillStyle = "#f38da6";
+
+    ctx.fill();
+
+
+    // ------------------------------------------------
+    // MOÑO ROSITA
+    // ------------------------------------------------
+
+    dibujarMoño(
+        0,
+        125,
+        0.75
+    );
+
+
+    ctx.restore();
+}
+
+
+// ==================================================
+// ANIMACIÓN
+// ==================================================
+
+function animar() {
+
+    ctx.clearRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    // Fondo
+
+    ctx.fillStyle = "#ffffff";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    tiempo += 0.025;
+
+
+    // ----------------------------------------------
+    // CORAZONES
+    // ----------------------------------------------
+
+    const flotacion =
+        Math.sin(tiempo) * 8;
+
+
+    corazon(
+        W * 0.17,
+        H * 0.30 + flotacion,
+        15,
+        "#ffb3c9",
+        -0.2
+    );
+
+
+    corazon(
+        W * 0.82,
+        H * 0.32 - flotacion,
+        18,
+        "#ff8fb3",
+        0.2
+    );
+
+
+    corazon(
+        W * 0.12,
+        H * 0.55 - flotacion,
+        9,
+        "#ffd0df"
+    );
+
+
+    corazon(
+        W * 0.88,
+        H * 0.55 + flotacion,
+        11,
+        "#ffc0d4"
+    );
+
+
+    // ----------------------------------------------
+    // PUG
+    // ----------------------------------------------
+
+    const escala =
+        Math.min(
+            W / 520,
+            H / 700
+        );
+
+
+    const respiracion =
+        1 +
+        Math.sin(tiempo * 1.5) * 0.012;
+
+
+    dibujarPug(
+        W / 2,
+        H * 0.48,
+        escala * respiracion
+    );
+
+
+    // ----------------------------------------------
+    // TEXTO
+    // ----------------------------------------------
+
+    ctx.textAlign = "center";
+
+    ctx.font =
+        `bold ${Math.max(42, W * 0.09)}px Arial`;
+
+
+    // sombra
+
+    ctx.fillStyle =
+        "rgba(255,100,150,0.15)";
+
+    ctx.fillText(
+        "MINA",
+        W / 2 + 3,
+        H * 0.93 + 4
+    );
+
+
+    // texto
+
+    const texto =
+        ctx.createLinearGradient(
+            W / 2 - 100,
+            0,
+            W / 2 + 100,
+            0
+        );
+
+    texto.addColorStop(
+        0,
+        "#ff6f9f"
+    );
+
+    texto.addColorStop(
+        0.5,
+        "#ff9fbc"
+    );
+
+    texto.addColorStop(
+        1,
+        "#ff6f9f"
+    );
+
+
+    ctx.fillStyle = texto;
+
+    ctx.fillText(
+        "MINA",
+        W / 2,
+        H * 0.93
+    );
+
+
+    // ----------------------------------------------
+    // SUBTÍTULO
+    // ----------------------------------------------
+
+    ctx.font =
+        `18px Arial`;
+
+    ctx.fillStyle =
+        "#b98a9b";
+
+    ctx.fillText(
+        "♡ una pequeña pug muy especial ♡",
+        W / 2,
+        H * 0.97
+    );
+
+
+    requestAnimationFrame(animar);
+}
+
+
+animar();
+
+</script>
+
+</body>
+</html>
