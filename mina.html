@@ -1,35 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mina 🐶💕</title>
 
-    <title>Mina 🐶</title>
+<style>
+    * {
+        box-sizing: border-box;
+    }
 
-    <style>
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: white;
+        font-family: Arial, sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
 
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: #ffffff;
+    .volver {
+        position: fixed;
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
 
-            font-family: Arial, sans-serif;
-        }
+        padding: 11px 22px;
 
-        canvas {
-            display: block;
-            width: 100vw;
-            height: 100vh;
-        }
+        background: linear-gradient(135deg, #ff8fb3, #ffb6c9);
+        color: white;
 
-    </style>
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+
+        border-radius: 25px;
+
+        box-shadow: 0 5px 15px rgba(255, 105, 150, 0.25);
+
+        transition: 0.25s;
+
+        z-index: 100;
+    }
+
+    .volver:hover {
+        transform: translateX(-50%) scale(1.08);
+        box-shadow: 0 8px 22px rgba(255, 105, 150, 0.4);
+    }
+</style>
 </head>
 
 <body>
+
+<a href="index.html" class="volver">
+    🌸 Volver a las flores
+</a>
 
 <canvas id="canvas"></canvas>
 
@@ -39,1006 +70,883 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 let W, H;
-let tiempo = 0;
+let time = 0;
 
 function resize() {
-
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
-
 }
-
-resize();
 
 window.addEventListener("resize", resize);
+resize();
 
 
-// ==================================================
+// --------------------------------------------------
 // UTILIDADES
-// ==================================================
+// --------------------------------------------------
 
-function elipse(x, y, rx, ry, color, rotacion = 0) {
-
-    ctx.save();
-
-    ctx.translate(x, y);
-    ctx.rotate(rotacion);
+function ellipse(x, y, rx, ry, fill, stroke = "#111", line = 6) {
 
     ctx.beginPath();
+    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
 
-    ctx.ellipse(
-        0,
-        0,
-        rx,
-        ry,
-        0,
-        0,
-        Math.PI * 2
-    );
+    if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+    }
 
-    ctx.fillStyle = color;
-    ctx.fill();
-
-    ctx.restore();
+    if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = line;
+        ctx.stroke();
+    }
 }
 
 
-function circulo(x, y, radio, color) {
+function roundRect(x, y, w, h, r, fill, stroke = "#111", line = 6) {
 
     ctx.beginPath();
 
-    ctx.arc(
+    ctx.roundRect(x, y, w, h, r);
+
+    if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+    }
+
+    if (stroke) {
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = line;
+        ctx.stroke();
+    }
+}
+
+
+function line(points, width = 6, color = "#111") {
+
+    ctx.beginPath();
+
+    ctx.moveTo(points[0][0], points[0][1]);
+
+    for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i][0], points[i][1]);
+    }
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.stroke();
+}
+
+
+function heart(x, y, size, alpha = 1) {
+
+    ctx.save();
+
+    ctx.globalAlpha = alpha;
+
+    ctx.beginPath();
+
+    ctx.moveTo(x, y + size * 0.3);
+
+    ctx.bezierCurveTo(
+        x - size * 0.8,
+        y - size * 0.2,
+        x - size * 0.5,
+        y - size * 0.8,
         x,
-        y,
-        radio,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle = color;
-    ctx.fill();
-
-}
-
-
-// ==================================================
-// CORAZONES
-// ==================================================
-
-function corazon(x, y, tamaño, color, rotacion = 0) {
-
-    ctx.save();
-
-    ctx.translate(x, y);
-    ctx.rotate(rotacion);
-
-    ctx.beginPath();
-
-    ctx.moveTo(0, tamaño * 0.8);
-
-    ctx.bezierCurveTo(
-        -tamaño * 1.2,
-        tamaño * 0.1,
-        -tamaño * 0.7,
-        -tamaño * 0.8,
-        0,
-        -tamaño * 0.25
+        y - size * 0.3
     );
 
     ctx.bezierCurveTo(
-        tamaño * 0.7,
-        -tamaño * 0.8,
-        tamaño * 1.2,
-        tamaño * 0.1,
-        0,
-        tamaño * 0.8
+        x + size * 0.5,
+        y - size * 0.8,
+        x + size * 0.8,
+        y - size * 0.2,
+        x,
+        y + size * 0.3
     );
 
-    ctx.fillStyle = color;
-
+    ctx.fillStyle = "#ff9fbd";
     ctx.fill();
 
     ctx.restore();
 }
 
 
-// ==================================================
-// MOÑO
-// ==================================================
-
-function dibujarMoño(x, y, escala) {
-
-    ctx.save();
-
-    ctx.translate(x, y);
-    ctx.scale(escala, escala);
-
-
-    // Sombra
-    ctx.globalAlpha = 0.15;
-
-    elipse(
-        -30,
-        8,
-        42,
-        30,
-        "#777",
-        -0.25
-    );
-
-    elipse(
-        30,
-        8,
-        42,
-        30,
-        "#777",
-        0.25
-    );
-
-    ctx.globalAlpha = 1;
-
-
-    // Ala izquierda
-
-    const gradIzq =
-        ctx.createLinearGradient(
-            -60,
-            -30,
-            0,
-            30
-        );
-
-    gradIzq.addColorStop(
-        0,
-        "#ff78a7"
-    );
-
-    gradIzq.addColorStop(
-        0.6,
-        "#ffabc4"
-    );
-
-    gradIzq.addColorStop(
-        1,
-        "#ff5f96"
-    );
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(0, 0);
-
-    ctx.bezierCurveTo(
-        -25,
-        -38,
-        -65,
-        -45,
-        -70,
-        -10
-    );
-
-    ctx.bezierCurveTo(
-        -75,
-        22,
-        -35,
-        40,
-        0,
-        10
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = gradIzq;
-    ctx.fill();
-
-
-    // Ala derecha
-
-    const gradDer =
-        ctx.createLinearGradient(
-            0,
-            -30,
-            60,
-            30
-        );
-
-    gradDer.addColorStop(
-        0,
-        "#ff78a7"
-    );
-
-    gradDer.addColorStop(
-        0.6,
-        "#ffabc4"
-    );
-
-    gradDer.addColorStop(
-        1,
-        "#ff5f96"
-    );
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(0, 0);
-
-    ctx.bezierCurveTo(
-        25,
-        -38,
-        65,
-        -45,
-        70,
-        -10
-    );
-
-    ctx.bezierCurveTo(
-        75,
-        22,
-        35,
-        40,
-        0,
-        10
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = gradDer;
-    ctx.fill();
-
-
-    // Centro del moño
-
-    const centro =
-        ctx.createRadialGradient(
-            -5,
-            -5,
-            2,
-            0,
-            0,
-            18
-        );
-
-    centro.addColorStop(
-        0,
-        "#ffd1df"
-    );
-
-    centro.addColorStop(
-        0.6,
-        "#ff78a7"
-    );
-
-    centro.addColorStop(
-        1,
-        "#e84c82"
-    );
-
-
-    circulo(
-        0,
-        5,
-        18,
-        centro
-    );
-
-
-    // Brillo
-
-    circulo(
-        -6,
-        -2,
-        4,
-        "rgba(255,255,255,0.65)"
-    );
-
-
-    ctx.restore();
-}
-
-
-// ==================================================
+// --------------------------------------------------
 // PUG
-// ==================================================
+// --------------------------------------------------
 
-function dibujarPug(cx, cy, escala) {
+function drawPug() {
+
+    const cx = W / 2;
+
+    // Tamaño adaptativo
+    const scale = Math.min(W, H) / 900;
 
     ctx.save();
 
-    ctx.translate(cx, cy);
+    ctx.translate(cx, H * 0.47);
+    ctx.scale(scale, scale);
 
-    ctx.scale(escala, escala);
+    const bob = Math.sin(time * 0.0025) * 2;
+
+    ctx.translate(0, bob);
 
 
-    // ------------------------------------------------
-    // SOMBRA
-    // ------------------------------------------------
+    // ==============================================
+    // CUERPO
+    // ==============================================
 
-    ctx.globalAlpha = 0.15;
-
-    elipse(
+    // Cuello / cuerpo detrás de la cabeza
+    ellipse(
         0,
         270,
-        180,
-        35,
-        "#777"
-    );
-
-    ctx.globalAlpha = 1;
-
-
-    // ------------------------------------------------
-    // CUERPO
-    // ------------------------------------------------
-
-    const cuerpo =
-        ctx.createLinearGradient(
-            -120,
-            20,
-            120,
-            250
-        );
-
-    cuerpo.addColorStop(
-        0,
-        "#d5a36e"
-    );
-
-    cuerpo.addColorStop(
-        0.55,
-        "#bd8655"
-    );
-
-    cuerpo.addColorStop(
-        1,
-        "#9b633f"
-    );
-
-
-    elipse(
-        0,
-        155,
-        115,
-        125,
-        cuerpo
-    );
-
-
-    // Pecho
-
-    elipse(
-        0,
-        170,
-        65,
-        90,
-        "#e8bd88"
-    );
-
-
-    // ------------------------------------------------
-    // PATAS
-    // ------------------------------------------------
-
-    elipse(
-        -75,
-        220,
-        42,
-        75,
-        "#a96f47",
-        -0.08
-    );
-
-    elipse(
-        75,
-        220,
-        42,
-        75,
-        "#a96f47",
-        0.08
-    );
-
-
-    // Patitas claras
-
-    elipse(
-        -76,
-        275,
-        39,
-        25,
-        "#d6a16e"
-    );
-
-    elipse(
-        76,
-        275,
-        39,
-        25,
-        "#d6a16e"
-    );
-
-
-    // ------------------------------------------------
-    // CABEZA
-    // ------------------------------------------------
-
-    const cara =
-        ctx.createRadialGradient(
-            -40,
-            -80,
-            20,
-            0,
-            -20,
-            170
-        );
-
-    cara.addColorStop(
-        0,
-        "#e1b47d"
-    );
-
-    cara.addColorStop(
-        0.65,
-        "#c78d5a"
-    );
-
-    cara.addColorStop(
-        1,
-        "#a96d47"
-    );
-
-
-    elipse(
-        0,
-        -25,
-        145,
-        125,
-        cara
-    );
-
-
-    // ------------------------------------------------
-    // OREJAS
-    // ------------------------------------------------
-
-    // izquierda
-
-    elipse(
-        -115,
-        -65,
-        55,
-        65,
-        "#54362f",
-        -0.45
-    );
-
-    // derecha
-
-    elipse(
-        115,
-        -65,
-        55,
-        65,
-        "#54362f",
-        0.45
-    );
-
-
-    // Interior de orejas
-
-    elipse(
-        -120,
-        -65,
-        32,
-        43,
-        "#332321",
-        -0.45
-    );
-
-    elipse(
+        175,
         120,
-        -65,
-        32,
-        43,
-        "#332321",
-        0.45
+        "#e8d8bd",
+        "#111",
+        7
     );
 
 
-    // ------------------------------------------------
-    // MÁSCARA OSCURA
-    // ------------------------------------------------
+    // ==============================================
+    // OREJA IZQUIERDA
+    // ==============================================
 
-    elipse(
-        -55,
-        -25,
-        48,
-        55,
-        "#62443a"
+    ctx.beginPath();
+
+    ctx.moveTo(-180, -170);
+
+    ctx.bezierCurveTo(
+        -245, -200,
+        -260, -135,
+        -245, -55
     );
 
-    elipse(
-        55,
-        -25,
-        48,
-        55,
-        "#62443a"
+    ctx.bezierCurveTo(
+        -240, 5,
+        -200, 35,
+        -165, 5
     );
 
+    ctx.bezierCurveTo(
+        -145, -35,
+        -145, -125,
+        -125, -175
+    );
 
-    // Parte central
+    ctx.closePath();
 
-    elipse(
+    ctx.fillStyle = "#4d4b4d";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+
+    // ==============================================
+    // OREJA DERECHA
+    // ==============================================
+
+    ctx.beginPath();
+
+    ctx.moveTo(165, -165);
+
+    ctx.bezierCurveTo(
+        225, -175,
+        260, -110,
+        245, -55
+    );
+
+    ctx.bezierCurveTo(
+        235, -15,
+        200, 20,
+        165, 10
+    );
+
+    ctx.bezierCurveTo(
+        145, -20,
+        150, -110,
+        130, -160
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#4d4b4d";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+
+    // ==============================================
+    // CABEZA GRANDE DE PUG
+    // ==============================================
+
+    const headGradient = ctx.createRadialGradient(
+        -45,
+        -100,
+        30,
         0,
-        10,
-        62,
-        70,
-        "#67463b"
+        0,
+        270
     );
 
+    headGradient.addColorStop(0, "#f1e4cb");
+    headGradient.addColorStop(0.75, "#e4d3b6");
+    headGradient.addColorStop(1, "#d5c19e");
 
-    // ------------------------------------------------
-    // OJOS
-    // ------------------------------------------------
 
-    // blanco / brillo ocular
+    ctx.beginPath();
 
-    elipse(
-        -55,
-        -40,
-        27,
-        32,
-        "#171312"
+    ctx.moveTo(-165, -175);
+
+    ctx.bezierCurveTo(
+        -135, -245,
+        -45, -265,
+        0, -250
     );
 
-    elipse(
-        55,
-        -40,
-        27,
-        32,
-        "#171312"
+    ctx.bezierCurveTo(
+        65, -270,
+        145, -235,
+        170, -170
     );
 
-
-    // Iris
-
-    circulo(
-        -55,
-        -40,
-        17,
-        "#211817"
+    ctx.bezierCurveTo(
+        195, -110,
+        190, -20,
+        175, 55
     );
 
-    circulo(
-        55,
-        -40,
-        17,
-        "#211817"
+    ctx.bezierCurveTo(
+        165, 145,
+        105, 205,
+        0, 210
+    );
+
+    ctx.bezierCurveTo(
+        -105, 205,
+        -165, 145,
+        -175, 55
+    );
+
+    ctx.bezierCurveTo(
+        -190, -25,
+        -190, -115,
+        -165, -175
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = headGradient;
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 8;
+    ctx.stroke();
+
+
+    // ==============================================
+    // ARRUGAS DE LA FRENTE
+    // ==============================================
+
+    line([
+        [-65, -205],
+        [-35, -220],
+        [-5, -218]
+    ], 7);
+
+    line([
+        [8, -220],
+        [35, -222],
+        [62, -208]
+    ], 7);
+
+    line([
+        [-92, -180],
+        [-65, -190]
+    ], 6);
+
+    line([
+        [65, -190],
+        [92, -180]
+    ], 6);
+
+
+    // ==============================================
+    // MÁSCARA OSCURA
+    // ==============================================
+
+    ctx.beginPath();
+
+    ctx.moveTo(-145, -65);
+
+    ctx.bezierCurveTo(
+        -125, -125,
+        -75, -145,
+        -30, -105
+    );
+
+    ctx.bezierCurveTo(
+        -10, -125,
+        10, -125,
+        30, -105
+    );
+
+    ctx.bezierCurveTo(
+        75, -145,
+        125, -125,
+        145, -65
+    );
+
+    ctx.bezierCurveTo(
+        160, 10,
+        120, 90,
+        55, 100
+    );
+
+    ctx.bezierCurveTo(
+        20, 110,
+        -20, 110,
+        -55, 100
+    );
+
+    ctx.bezierCurveTo(
+        -120, 90,
+        -160, 10,
+        -145, -65
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#575557";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 7;
+    ctx.stroke();
+
+
+    // ==============================================
+    // OJOS GRANDES DE PUG
+    // ==============================================
+
+    // Ojo izquierdo
+    ellipse(
+        -83,
+        -72,
+        42,
+        48,
+        "#080808",
+        "#111",
+        5
+    );
+
+    // Ojo derecho
+    ellipse(
+        83,
+        -72,
+        42,
+        48,
+        "#080808",
+        "#111",
+        5
     );
 
 
     // Brillos
+    ellipse(-96, -88, 11, 13, "white", null, 0);
+    ellipse(70, -88, 11, 13, "white", null, 0);
 
-    circulo(
-        -62,
-        -47,
-        7,
-        "#ffffff"
+    ellipse(-72, -52, 5, 6, "#dddddd", null, 0);
+    ellipse(94, -52, 5, 6, "#dddddd", null, 0);
+
+
+    // ==============================================
+    // CEJAS
+    // ==============================================
+
+    line([
+        [-115, -125],
+        [-85, -138],
+        [-55, -132]
+    ], 8);
+
+    line([
+        [55, -132],
+        [85, -138],
+        [115, -125]
+    ], 8);
+
+
+    // ==============================================
+    // ARRUGAS ALREDEDOR DEL HOCICO
+    // ==============================================
+
+    line([
+        [-145, -20],
+        [-115, -35],
+        [-85, -30],
+        [-55, -10]
+    ], 7);
+
+    line([
+        [145, -20],
+        [115, -35],
+        [85, -30],
+        [55, -10]
+    ], 7);
+
+
+    // ==============================================
+    // HOCICO / MEJILLAS
+    // ==============================================
+
+    ellipse(
+        -58,
+        30,
+        68,
+        58,
+        "#656365",
+        "#111",
+        6
     );
 
-    circulo(
-        48,
-        -47,
-        7,
-        "#ffffff"
-    );
-
-    circulo(
-        -50,
-        -31,
-        3,
-        "#ffffff"
-    );
-
-    circulo(
-        60,
-        -31,
-        3,
-        "#ffffff"
+    ellipse(
+        58,
+        30,
+        68,
+        58,
+        "#656365",
+        "#111",
+        6
     );
 
 
-    // ------------------------------------------------
-    // ARRUGAS
-    // ------------------------------------------------
-
-    ctx.strokeStyle =
-        "rgba(85,55,45,0.5)";
-
-    ctx.lineWidth = 5;
-
-    ctx.lineCap = "round";
-
-
-    // Frente
+    // ==============================================
+    // NARIZ NEGRA
+    // ==============================================
 
     ctx.beginPath();
 
-    ctx.moveTo(-35, -80);
-    ctx.quadraticCurveTo(
-        -15,
-        -65,
-        -5,
-        -80
-    );
-
-    ctx.moveTo(5, -80);
-
-    ctx.quadraticCurveTo(
-        15,
-        -65,
-        35,
-        -80
-    );
-
-    ctx.stroke();
-
-
-    // Laterales de la cara
-
-    ctx.beginPath();
-
-    ctx.moveTo(-105, -5);
-
-    ctx.quadraticCurveTo(
-        -80,
-        10,
-        -90,
-        30
-    );
-
-    ctx.moveTo(105, -5);
-
-    ctx.quadraticCurveTo(
-        80,
-        10,
-        90,
-        30
-    );
-
-    ctx.stroke();
-
-
-    // ------------------------------------------------
-    // HOCICO
-    // ------------------------------------------------
-
-    elipse(
-        0,
-        38,
-        65,
-        48,
-        "#d19a68"
-    );
-
-
-    // ------------------------------------------------
-    // NARIZ
-    // ------------------------------------------------
-
-    const nariz =
-        ctx.createRadialGradient(
-            -10,
-            27,
-            2,
-            0,
-            40,
-            28
-        );
-
-    nariz.addColorStop(
-        0,
-        "#40302d"
-    );
-
-    nariz.addColorStop(
-        0.6,
-        "#201817"
-    );
-
-    nariz.addColorStop(
-        1,
-        "#0e0c0c"
-    );
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(-32, 30);
+    ctx.moveTo(-52, -15);
 
     ctx.bezierCurveTo(
+        -35, -38,
+        35, -38,
+        52, -15
+    );
+
+    ctx.bezierCurveTo(
+        48, 12,
+        20, 28,
+        0, 32
+    );
+
+    ctx.bezierCurveTo(
+        -20, 28,
+        -48, 12,
+        -52, -15
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#050505";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+
+    // brillo de nariz
+    ellipse(
         -25,
-        15,
-        25,
-        15,
-        32,
-        30
-    );
-
-    ctx.bezierCurveTo(
-        35,
-        50,
+        -12,
         10,
-        60,
-        0,
-        60
-    );
-
-    ctx.bezierCurveTo(
-        -10,
-        60,
-        -35,
-        50,
-        -32,
-        30
-    );
-
-    ctx.fillStyle = nariz;
-    ctx.fill();
-
-
-    // Brillo nariz
-
-    elipse(
-        -10,
-        28,
-        9,
-        5,
-        "rgba(255,255,255,0.35)"
+        7,
+        "#555",
+        null,
+        0
     );
 
 
-    // ------------------------------------------------
+    // ==============================================
+    // LÍNEA DEL HOCICO
+    // ==============================================
+
+    line([
+        [0, 27],
+        [0, 78]
+    ], 7);
+
+
+    // ==============================================
     // BOCA
-    // ------------------------------------------------
-
-    ctx.strokeStyle = "#432b29";
-
-    ctx.lineWidth = 4;
+    // ==============================================
 
     ctx.beginPath();
 
-    ctx.moveTo(0, 58);
+    ctx.moveTo(-75, 73);
 
-    ctx.lineTo(0, 72);
-
-    ctx.quadraticCurveTo(
-        -20,
-        88,
-        -38,
-        73
+    ctx.bezierCurveTo(
+        -55, 115,
+        -20, 125,
+        0, 105
     );
 
-    ctx.moveTo(0, 72);
-
-    ctx.quadraticCurveTo(
-        20,
-        88,
-        38,
-        73
+    ctx.bezierCurveTo(
+        20, 125,
+        55, 115,
+        75, 73
     );
 
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 7;
+    ctx.lineCap = "round";
     ctx.stroke();
 
 
-    // ------------------------------------------------
-    // LENGÜITA
-    // ------------------------------------------------
+    // interior de la boca
+    ctx.beginPath();
+
+    ctx.moveTo(-55, 80);
+
+    ctx.bezierCurveTo(
+        -40, 145,
+        40, 145,
+        55, 80
+    );
+
+    ctx.fillStyle = "#242224";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+
+    // ==============================================
+    // LENGUA
+    // ==============================================
 
     ctx.beginPath();
 
-    ctx.moveTo(-17, 77);
+    ctx.moveTo(-25, 105);
 
-    ctx.quadraticCurveTo(
-        0,
-        105,
-        17,
-        77
+    ctx.bezierCurveTo(
+        -25, 150,
+        -15, 165,
+        0, 166
     );
 
-    ctx.fillStyle = "#f38da6";
+    ctx.bezierCurveTo(
+        15, 165,
+        25, 150,
+        25, 105
+    );
 
+    ctx.closePath();
+
+    const tongueGradient = ctx.createLinearGradient(
+        0, 105,
+        0, 165
+    );
+
+    tongueGradient.addColorStop(0, "#ff9baa");
+    tongueGradient.addColorStop(1, "#ed7085");
+
+    ctx.fillStyle = tongueGradient;
     ctx.fill();
 
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 6;
+    ctx.stroke();
 
-    // ------------------------------------------------
-    // MOÑO ROSITA
-    // ------------------------------------------------
 
-    dibujarMoño(
-        0,
-        125,
-        0.75
+    // línea de la lengua
+    line([
+        [0, 120],
+        [0, 153]
+    ], 4, "#b95768");
+
+
+    // ==============================================
+    // PATITA IZQUIERDA
+    // ==============================================
+
+    ctx.beginPath();
+
+    ctx.moveTo(-170, 170);
+
+    ctx.bezierCurveTo(
+        -205, 160,
+        -220, 185,
+        -218, 220
     );
+
+    ctx.bezierCurveTo(
+        -218, 250,
+        -195, 265,
+        -160, 260
+    );
+
+    ctx.bezierCurveTo(
+        -125, 265,
+        -105, 250,
+        -110, 220
+    );
+
+    ctx.bezierCurveTo(
+        -110, 190,
+        -135, 170,
+        -170, 170
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#ead9bd";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 7;
+    ctx.stroke();
+
+
+    // ==============================================
+    // PATITA DERECHA
+    // ==============================================
+
+    ctx.beginPath();
+
+    ctx.moveTo(170, 170);
+
+    ctx.bezierCurveTo(
+        205, 160,
+        220, 185,
+        218, 220
+    );
+
+    ctx.bezierCurveTo(
+        218, 250,
+        195, 265,
+        160, 260
+    );
+
+    ctx.bezierCurveTo(
+        125, 265,
+        105, 250,
+        110, 220
+    );
+
+    ctx.bezierCurveTo(
+        110, 190,
+        135, 170,
+        170, 170
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#ead9bd";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 7;
+    ctx.stroke();
+
+
+    // ==============================================
+    // DEDITOS
+    // ==============================================
+
+    line([
+        [-185, 215],
+        [-185, 240]
+    ], 6);
+
+    line([
+        [-155, 212],
+        [-155, 242]
+    ], 6);
+
+    line([
+        [-130, 215],
+        [-130, 238]
+    ], 6);
+
+
+    line([
+        [185, 215],
+        [185, 240]
+    ], 6);
+
+    line([
+        [155, 212],
+        [155, 242]
+    ], 6);
+
+    line([
+        [130, 215],
+        [130, 238]
+    ], 6);
+
+
+    // ==============================================
+    // LÍNEA DEL SUELO
+    // ==============================================
+
+    line([
+        [-260, 260],
+        [260, 260]
+    ], 8);
+
+
+    // ==============================================
+    // MOÑO ROSA
+    // ==============================================
+
+    // Solo un pequeño moño en la parte superior
+    // para no tapar la cara del pug.
+
+    ctx.save();
+
+    ctx.translate(125, -205);
+    ctx.rotate(0.12);
+
+    // lado izquierdo
+    ctx.beginPath();
+
+    ctx.moveTo(0, 0);
+
+    ctx.bezierCurveTo(
+        -45, -30,
+        -75, -15,
+        -70, 20
+    );
+
+    ctx.bezierCurveTo(
+        -65, 45,
+        -25, 35,
+        0, 15
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#ff9fbd";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+
+    // lado derecho
+    ctx.beginPath();
+
+    ctx.moveTo(0, 0);
+
+    ctx.bezierCurveTo(
+        45, -30,
+        75, -15,
+        70, 20
+    );
+
+    ctx.bezierCurveTo(
+        65, 45,
+        25, 35,
+        0, 15
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle = "#ff9fbd";
+    ctx.fill();
+
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+
+
+    // centro
+    ellipse(
+        0,
+        8,
+        18,
+        18,
+        "#ff719f",
+        "#111",
+        5
+    );
+
+    ctx.restore();
 
 
     ctx.restore();
 }
 
 
-// ==================================================
-// ANIMACIÓN
-// ==================================================
+// --------------------------------------------------
+// TEXTO
+// --------------------------------------------------
 
-function animar() {
+function drawText() {
 
-    ctx.clearRect(
+    const scale = Math.min(W, H) / 900;
+
+    ctx.save();
+
+    ctx.translate(W / 2, H * 0.82);
+
+    ctx.scale(scale, scale);
+
+    const gradient = ctx.createLinearGradient(
+        -100,
         0,
-        0,
-        W,
-        H
+        100,
+        0
     );
 
+    gradient.addColorStop(0, "#ff719f");
+    gradient.addColorStop(0.5, "#ff9fbd");
+    gradient.addColorStop(1, "#ff719f");
 
-    // Fondo
-
-    ctx.fillStyle = "#ffffff";
-
-    ctx.fillRect(
-        0,
-        0,
-        W,
-        H
-    );
-
-
-    tiempo += 0.025;
-
-
-    // ----------------------------------------------
-    // CORAZONES
-    // ----------------------------------------------
-
-    const flotacion =
-        Math.sin(tiempo) * 8;
-
-
-    corazon(
-        W * 0.17,
-        H * 0.30 + flotacion,
-        15,
-        "#ffb3c9",
-        -0.2
-    );
-
-
-    corazon(
-        W * 0.82,
-        H * 0.32 - flotacion,
-        18,
-        "#ff8fb3",
-        0.2
-    );
-
-
-    corazon(
-        W * 0.12,
-        H * 0.55 - flotacion,
-        9,
-        "#ffd0df"
-    );
-
-
-    corazon(
-        W * 0.88,
-        H * 0.55 + flotacion,
-        11,
-        "#ffc0d4"
-    );
-
-
-    // ----------------------------------------------
-    // PUG
-    // ----------------------------------------------
-
-    const escala =
-        Math.min(
-            W / 520,
-            H / 700
-        );
-
-
-    const respiracion =
-        1 +
-        Math.sin(tiempo * 1.5) * 0.012;
-
-
-    dibujarPug(
-        W / 2,
-        H * 0.48,
-        escala * respiracion
-    );
-
-
-    // ----------------------------------------------
-    // TEXTO
-    // ----------------------------------------------
-
+    ctx.font = "bold 72px Arial";
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
 
-    ctx.font =
-        `bold ${Math.max(42, W * 0.09)}px Arial`;
+    ctx.fillStyle = gradient;
 
+    ctx.shadowColor = "rgba(255, 105, 150, 0.25)";
+    ctx.shadowBlur = 12;
 
-    // sombra
+    ctx.fillText("MINA", 0, 0);
 
-    ctx.fillStyle =
-        "rgba(255,100,150,0.15)";
+    ctx.shadowBlur = 0;
 
-    ctx.fillText(
-        "MINA",
-        W / 2 + 3,
-        H * 0.93 + 4
-    );
+    ctx.font = "20px Arial";
 
-
-    // texto
-
-    const texto =
-        ctx.createLinearGradient(
-            W / 2 - 100,
-            0,
-            W / 2 + 100,
-            0
-        );
-
-    texto.addColorStop(
-        0,
-        "#ff6f9f"
-    );
-
-    texto.addColorStop(
-        0.5,
-        "#ff9fbc"
-    );
-
-    texto.addColorStop(
-        1,
-        "#ff6f9f"
-    );
-
-
-    ctx.fillStyle = texto;
-
-    ctx.fillText(
-        "MINA",
-        W / 2,
-        H * 0.93
-    );
-
-
-    // ----------------------------------------------
-    // SUBTÍTULO
-    // ----------------------------------------------
-
-    ctx.font =
-        `18px Arial`;
-
-    ctx.fillStyle =
-        "#b98a9b";
+    ctx.fillStyle = "#777";
 
     ctx.fillText(
         "♡ una pequeña pug muy especial ♡",
-        W / 2,
-        H * 0.97
+        0,
+        42
     );
 
-
-    requestAnimationFrame(animar);
+    ctx.restore();
 }
 
 
-animar();
+// --------------------------------------------------
+// CORAZONES
+// --------------------------------------------------
 
-</script>
+function drawHearts() {
 
-</body>
-</html>
+    const s
