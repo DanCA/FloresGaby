@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mina 🐶💕</title>
-
-<style>
+<title>Mina 🐶💕</title><style>
     * {
         box-sizing: border-box;
     }
@@ -45,7 +42,6 @@
         box-shadow: 0 5px 15px rgba(255, 105, 150, 0.25);
 
         transition: 0.25s;
-
         z-index: 100;
     }
 
@@ -53,16 +49,9 @@
         transform: translateX(-50%) scale(1.08);
         box-shadow: 0 8px 22px rgba(255, 105, 150, 0.4);
     }
-</style>
-</head>
-
-<body>
-
-<a href="index.html" class="volver">
+</style></head><body><a href="index.html" class="volver">
     🌸 Volver a las flores
-</a>
-
-<canvas id="canvas"></canvas>
+</a><canvas id="canvas"></canvas>
 
 <script>
 
@@ -71,6 +60,11 @@ const ctx = canvas.getContext("2d");
 
 let W, H;
 let time = 0;
+
+
+// ==================================================
+// RESIZE
+// ==================================================
 
 function resize() {
     W = canvas.width = window.innerWidth;
@@ -81,61 +75,65 @@ window.addEventListener("resize", resize);
 resize();
 
 
-// --------------------------------------------------
+// ==================================================
 // UTILIDADES
-// --------------------------------------------------
+// ==================================================
 
-function ellipse(x, y, rx, ry, fill, stroke = "#111", line = 6) {
+function ellipse(
+    x, y,
+    rx, ry,
+    fill,
+    stroke = "#171515",
+    line = 5,
+    rotation = 0
+) {
+
+    ctx.save();
+
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
 
     ctx.beginPath();
-    ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
 
     if (fill) {
         ctx.fillStyle = fill;
         ctx.fill();
     }
 
-    if (stroke) {
+    if (stroke && line > 0) {
         ctx.strokeStyle = stroke;
         ctx.lineWidth = line;
         ctx.stroke();
     }
+
+    ctx.restore();
 }
 
 
-function roundRect(x, y, w, h, r, fill, stroke = "#111", line = 6) {
+function circle(
+    x, y,
+    r,
+    fill,
+    stroke = "#171515",
+    line = 5
+) {
 
-    ctx.beginPath();
-
-    ctx.roundRect(x, y, w, h, r);
-
-    if (fill) {
-        ctx.fillStyle = fill;
-        ctx.fill();
-    }
-
-    if (stroke) {
-        ctx.strokeStyle = stroke;
-        ctx.lineWidth = line;
-        ctx.stroke();
-    }
+    ellipse(x, y, r, r, fill, stroke, line);
 }
 
 
-function line(points, width = 6, color = "#111") {
+function line(x1, y1, x2, y2, width = 5, color = "#171515") {
 
     ctx.beginPath();
 
-    ctx.moveTo(points[0][0], points[0][1]);
-
-    for (let i = 1; i < points.length; i++) {
-        ctx.lineTo(points[i][0], points[i][1]);
-    }
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
 
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
     ctx.lineCap = "round";
-    ctx.lineJoin = "round";
+
     ctx.stroke();
 }
 
@@ -175,20 +173,17 @@ function heart(x, y, size, alpha = 1) {
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // PUG
-// --------------------------------------------------
+// ==================================================
 
 function drawPug() {
 
-    const cx = W / 2;
-
-    // Tamaño adaptativo
     const scale = Math.min(W, H) / 900;
 
     ctx.save();
 
-    ctx.translate(cx, H * 0.47);
+    ctx.translate(W / 2, H * 0.47);
     ctx.scale(scale, scale);
 
     const bob = Math.sin(time * 0.0025) * 2;
@@ -196,704 +191,548 @@ function drawPug() {
     ctx.translate(0, bob);
 
 
-    // ==============================================
+    // ==================================================
     // CUERPO
-    // ==============================================
+    // ==================================================
 
-    // Cuello / cuerpo detrás de la cabeza
     ellipse(
         0,
-        270,
-        175,
-        120,
-        "#e8d8bd",
-        "#111",
+        245,
+        145,
+        105,
+        "#e5d2b1",
+        "#171515",
         7
     );
 
 
-    // ==============================================
-    // OREJA IZQUIERDA
-    // ==============================================
+    // ==================================================
+    // PECHO
+    // ==================================================
 
-    ctx.beginPath();
-
-    ctx.moveTo(-180, -170);
-
-    ctx.bezierCurveTo(
-        -245, -200,
-        -260, -135,
-        -245, -55
-    );
-
-    ctx.bezierCurveTo(
-        -240, 5,
-        -200, 35,
-        -165, 5
-    );
-
-    ctx.bezierCurveTo(
-        -145, -35,
-        -145, -125,
-        -125, -175
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#4d4b4d";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 8;
-    ctx.stroke();
-
-
-    // ==============================================
-    // OREJA DERECHA
-    // ==============================================
-
-    ctx.beginPath();
-
-    ctx.moveTo(165, -165);
-
-    ctx.bezierCurveTo(
-        225, -175,
-        260, -110,
-        245, -55
-    );
-
-    ctx.bezierCurveTo(
-        235, -15,
-        200, 20,
-        165, 10
-    );
-
-    ctx.bezierCurveTo(
-        145, -20,
-        150, -110,
-        130, -160
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#4d4b4d";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 8;
-    ctx.stroke();
-
-
-    // ==============================================
-    // CABEZA GRANDE DE PUG
-    // ==============================================
-
-    const headGradient = ctx.createRadialGradient(
-        -45,
-        -100,
-        30,
-        0,
-        0,
-        270
-    );
-
-    headGradient.addColorStop(0, "#f1e4cb");
-    headGradient.addColorStop(0.75, "#e4d3b6");
-    headGradient.addColorStop(1, "#d5c19e");
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(-165, -175);
-
-    ctx.bezierCurveTo(
-        -135, -245,
-        -45, -265,
-        0, -250
-    );
-
-    ctx.bezierCurveTo(
-        65, -270,
-        145, -235,
-        170, -170
-    );
-
-    ctx.bezierCurveTo(
-        195, -110,
-        190, -20,
-        175, 55
-    );
-
-    ctx.bezierCurveTo(
-        165, 145,
-        105, 205,
-        0, 210
-    );
-
-    ctx.bezierCurveTo(
-        -105, 205,
-        -165, 145,
-        -175, 55
-    );
-
-    ctx.bezierCurveTo(
-        -190, -25,
-        -190, -115,
-        -165, -175
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = headGradient;
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 8;
-    ctx.stroke();
-
-
-    // ==============================================
-    // ARRUGAS DE LA FRENTE
-    // ==============================================
-
-    line([
-        [-65, -205],
-        [-35, -220],
-        [-5, -218]
-    ], 7);
-
-    line([
-        [8, -220],
-        [35, -222],
-        [62, -208]
-    ], 7);
-
-    line([
-        [-92, -180],
-        [-65, -190]
-    ], 6);
-
-    line([
-        [65, -190],
-        [92, -180]
-    ], 6);
-
-
-    // ==============================================
-    // MÁSCARA OSCURA
-    // ==============================================
-
-    ctx.beginPath();
-
-    ctx.moveTo(-145, -65);
-
-    ctx.bezierCurveTo(
-        -125, -125,
-        -75, -145,
-        -30, -105
-    );
-
-    ctx.bezierCurveTo(
-        -10, -125,
-        10, -125,
-        30, -105
-    );
-
-    ctx.bezierCurveTo(
-        75, -145,
-        125, -125,
-        145, -65
-    );
-
-    ctx.bezierCurveTo(
-        160, 10,
-        120, 90,
-        55, 100
-    );
-
-    ctx.bezierCurveTo(
-        20, 110,
-        -20, 110,
-        -55, 100
-    );
-
-    ctx.bezierCurveTo(
-        -120, 90,
-        -160, 10,
-        -145, -65
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#575557";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 7;
-    ctx.stroke();
-
-
-    // ==============================================
-    // OJOS GRANDES DE PUG
-    // ==============================================
-
-    // Ojo izquierdo
     ellipse(
-        -83,
-        -72,
-        42,
-        48,
-        "#080808",
-        "#111",
-        5
-    );
-
-    // Ojo derecho
-    ellipse(
-        83,
-        -72,
-        42,
-        48,
-        "#080808",
-        "#111",
+        0,
+        220,
+        95,
+        105,
+        "#f0dfc3",
+        "#171515",
         5
     );
 
 
-    // Brillos
-    ellipse(-96, -88, 11, 13, "white", null, 0);
-    ellipse(70, -88, 11, 13, "white", null, 0);
+    // ==================================================
+    // OREJAS
+    // ==================================================
 
-    ellipse(-72, -52, 5, 6, "#dddddd", null, 0);
-    ellipse(94, -52, 5, 6, "#dddddd", null, 0);
-
-
-    // ==============================================
-    // CEJAS
-    // ==============================================
-
-    line([
-        [-115, -125],
-        [-85, -138],
-        [-55, -132]
-    ], 8);
-
-    line([
-        [55, -132],
-        [85, -138],
-        [115, -125]
-    ], 8);
-
-
-    // ==============================================
-    // ARRUGAS ALREDEDOR DEL HOCICO
-    // ==============================================
-
-    line([
-        [-145, -20],
-        [-115, -35],
-        [-85, -30],
-        [-55, -10]
-    ], 7);
-
-    line([
-        [145, -20],
-        [115, -35],
-        [85, -30],
-        [55, -10]
-    ], 7);
-
-
-    // ==============================================
-    // HOCICO / MEJILLAS
-    // ==============================================
-
+    // Oreja izquierda
     ellipse(
-        -58,
-        30,
-        68,
+        -142,
+        -130,
         58,
-        "#656365",
-        "#111",
-        6
-    );
-
-    ellipse(
-        58,
-        30,
-        68,
-        58,
-        "#656365",
-        "#111",
-        6
-    );
-
-
-    // ==============================================
-    // NARIZ NEGRA
-    // ==============================================
-
-    ctx.beginPath();
-
-    ctx.moveTo(-52, -15);
-
-    ctx.bezierCurveTo(
-        -35, -38,
-        35, -38,
-        52, -15
-    );
-
-    ctx.bezierCurveTo(
-        48, 12,
-        20, 28,
-        0, 32
-    );
-
-    ctx.bezierCurveTo(
-        -20, 28,
-        -48, 12,
-        -52, -15
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#050505";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 6;
-    ctx.stroke();
-
-
-    // brillo de nariz
-    ellipse(
-        -25,
-        -12,
-        10,
+        82,
+        "#454245",
+        "#171515",
         7,
-        "#555",
+        -0.35
+    );
+
+    // Interior oreja izquierda
+    ellipse(
+        -143,
+        -130,
+        34,
+        60,
+        "#302e30",
+        null,
+        0,
+        -0.35
+    );
+
+
+    // Oreja derecha
+    ellipse(
+        142,
+        -130,
+        58,
+        82,
+        "#454245",
+        "#171515",
+        7,
+        0.35
+    );
+
+    // Interior oreja derecha
+    ellipse(
+        143,
+        -130,
+        34,
+        60,
+        "#302e30",
+        null,
+        0,
+        0.35
+    );
+
+
+    // ==================================================
+    // CABEZA
+    // ==================================================
+
+    ellipse(
+        0,
+        -55,
+        175,
+        190,
+        "#e7d5b8",
+        "#171515",
+        8
+    );
+
+
+    // ==================================================
+    // PEQUEÑAS MANCHAS / ARRUGAS DE FRENTE
+    // ==================================================
+
+    ellipse(
+        -48,
+        -195,
+        28,
+        12,
+        "#d0b995",
+        null,
+        0,
+        -0.1
+    );
+
+    ellipse(
+        48,
+        -195,
+        28,
+        12,
+        "#d0b995",
+        null,
+        0,
+        0.1
+    );
+
+    ellipse(
+        -70,
+        -175,
+        18,
+        9,
+        "#d0b995",
+        null,
+        0
+    );
+
+    ellipse(
+        70,
+        -175,
+        18,
+        9,
+        "#d0b995",
         null,
         0
     );
 
 
-    // ==============================================
-    // LÍNEA DEL HOCICO
-    // ==============================================
+    // ==================================================
+    // MÁSCARA DEL PUG
+    // ==================================================
 
-    line([
-        [0, 27],
-        [0, 78]
-    ], 7);
+    // Gran zona oscura central
+    ellipse(
+        0,
+        -58,
+        118,
+        105,
+        "#555255",
+        "#171515",
+        6
+    );
 
 
-    // ==============================================
+    // Parte superior de la máscara
+    ellipse(
+        0,
+        -100,
+        92,
+        62,
+        "#555255",
+        null,
+        0
+    );
+
+
+    // ==================================================
+    // OJOS
+    // ==================================================
+
+    // Ojo izquierdo
+    circle(
+        -67,
+        -85,
+        38,
+        "#080808",
+        "#171515",
+        5
+    );
+
+    // Ojo derecho
+    circle(
+        67,
+        -85,
+        38,
+        "#080808",
+        "#171515",
+        5
+    );
+
+
+    // Brillos grandes
+    circle(
+        -79,
+        -99,
+        10,
+        "white",
+        null,
+        0
+    );
+
+    circle(
+        55,
+        -99,
+        10,
+        "white",
+        null,
+        0
+    );
+
+
+    // Brillos pequeños
+    circle(
+        -59,
+        -67,
+        5,
+        "#cccccc",
+        null,
+        0
+    );
+
+    circle(
+        75,
+        -67,
+        5,
+        "#cccccc",
+        null,
+        0
+    );
+
+
+    // ==================================================
+    // CEJAS
+    // ==================================================
+
+    ellipse(
+        -67,
+        -132,
+        34,
+        11,
+        "#3f3c3f",
+        null,
+        0,
+        -0.1
+    );
+
+    ellipse(
+        67,
+        -132,
+        34,
+        11,
+        "#3f3c3f",
+        null,
+        0,
+        0.1
+    );
+
+
+    // ==================================================
+    // MEJILLAS / HOCICO
+    // ==================================================
+
+    ellipse(
+        -48,
+        5,
+        66,
+        55,
+        "#686568",
+        "#171515",
+        5
+    );
+
+    ellipse(
+        48,
+        5,
+        66,
+        55,
+        "#686568",
+        "#171515",
+        5
+    );
+
+
+    // ==================================================
+    // NARIZ
+    // ==================================================
+
+    ellipse(
+        0,
+        -15,
+        43,
+        30,
+        "#111111",
+        "#171515",
+        5
+    );
+
+
+    // Brillo de nariz
+    ellipse(
+        -14,
+        -24,
+        10,
+        6,
+        "#555555",
+        null,
+        0
+    );
+
+
+    // ==================================================
     // BOCA
-    // ==============================================
+    // ==================================================
 
+    line(
+        0,
+        10,
+        0,
+        62,
+        6
+    );
+
+
+    // Sonrisa izquierda
     ctx.beginPath();
 
-    ctx.moveTo(-75, 73);
-
-    ctx.bezierCurveTo(
-        -55, 115,
-        -20, 125,
-        0, 105
+    ctx.arc(
+        -25,
+        54,
+        27,
+        0.15,
+        Math.PI * 0.85
     );
 
-    ctx.bezierCurveTo(
-        20, 125,
-        55, 115,
-        75, 73
-    );
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 7;
+    ctx.strokeStyle = "#171515";
+    ctx.lineWidth = 6;
     ctx.lineCap = "round";
     ctx.stroke();
 
 
-    // interior de la boca
+    // Sonrisa derecha
     ctx.beginPath();
 
-    ctx.moveTo(-55, 80);
-
-    ctx.bezierCurveTo(
-        -40, 145,
-        40, 145,
-        55, 80
+    ctx.arc(
+        25,
+        54,
+        27,
+        Math.PI * 0.15,
+        Math.PI * 0.85
     );
 
-    ctx.fillStyle = "#242224";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
+    ctx.strokeStyle = "#171515";
     ctx.lineWidth = 6;
     ctx.stroke();
 
 
-    // ==============================================
+    // ==================================================
     // LENGUA
-    // ==============================================
+    // ==================================================
 
-    ctx.beginPath();
-
-    ctx.moveTo(-25, 105);
-
-    ctx.bezierCurveTo(
-        -25, 150,
-        -15, 165,
-        0, 166
+    ellipse(
+        0,
+        92,
+        23,
+        32,
+        "#f18a9d",
+        "#171515",
+        5
     );
 
-    ctx.bezierCurveTo(
-        15, 165,
-        25, 150,
-        25, 105
+    line(
+        0,
+        76,
+        0,
+        111,
+        3,
+        "#b85d70"
     );
 
-    ctx.closePath();
 
-    const tongueGradient = ctx.createLinearGradient(
-        0, 105,
-        0, 165
+    // ==================================================
+    // PATITAS
+    // ==================================================
+
+    ellipse(
+        -92,
+        205,
+        55,
+        76,
+        "#e7d5b8",
+        "#171515",
+        6
     );
 
-    tongueGradient.addColorStop(0, "#ff9baa");
-    tongueGradient.addColorStop(1, "#ed7085");
-
-    ctx.fillStyle = tongueGradient;
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 6;
-    ctx.stroke();
-
-
-    // línea de la lengua
-    line([
-        [0, 120],
-        [0, 153]
-    ], 4, "#b95768");
-
-
-    // ==============================================
-    // PATITA IZQUIERDA
-    // ==============================================
-
-    ctx.beginPath();
-
-    ctx.moveTo(-170, 170);
-
-    ctx.bezierCurveTo(
-        -205, 160,
-        -220, 185,
-        -218, 220
+    ellipse(
+        92,
+        205,
+        55,
+        76,
+        "#e7d5b8",
+        "#171515",
+        6
     );
 
-    ctx.bezierCurveTo(
-        -218, 250,
-        -195, 265,
-        -160, 260
-    );
 
-    ctx.bezierCurveTo(
-        -125, 265,
-        -105, 250,
-        -110, 220
-    );
-
-    ctx.bezierCurveTo(
-        -110, 190,
-        -135, 170,
-        -170, 170
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#ead9bd";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 7;
-    ctx.stroke();
-
-
-    // ==============================================
-    // PATITA DERECHA
-    // ==============================================
-
-    ctx.beginPath();
-
-    ctx.moveTo(170, 170);
-
-    ctx.bezierCurveTo(
-        205, 160,
-        220, 185,
-        218, 220
-    );
-
-    ctx.bezierCurveTo(
-        218, 250,
-        195, 265,
-        160, 260
-    );
-
-    ctx.bezierCurveTo(
-        125, 265,
-        105, 250,
-        110, 220
-    );
-
-    ctx.bezierCurveTo(
-        110, 190,
-        135, 170,
-        170, 170
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#ead9bd";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 7;
-    ctx.stroke();
-
-
-    // ==============================================
+    // ==================================================
     // DEDITOS
-    // ==============================================
+    // ==================================================
 
-    line([
-        [-185, 215],
-        [-185, 240]
-    ], 6);
+    ellipse(
+        -110,
+        225,
+        7,
+        16,
+        "#c6ad8d",
+        null,
+        0
+    );
 
-    line([
-        [-155, 212],
-        [-155, 242]
-    ], 6);
+    ellipse(
+        -91,
+        230,
+        7,
+        17,
+        "#c6ad8d",
+        null,
+        0
+    );
 
-    line([
-        [-130, 215],
-        [-130, 238]
-    ], 6);
-
-
-    line([
-        [185, 215],
-        [185, 240]
-    ], 6);
-
-    line([
-        [155, 212],
-        [155, 242]
-    ], 6);
-
-    line([
-        [130, 215],
-        [130, 238]
-    ], 6);
-
-
-    // ==============================================
-    // LÍNEA DEL SUELO
-    // ==============================================
-
-    line([
-        [-260, 260],
-        [260, 260]
-    ], 8);
+    ellipse(
+        -72,
+        225,
+        7,
+        16,
+        "#c6ad8d",
+        null,
+        0
+    );
 
 
-    // ==============================================
-    // MOÑO ROSA
-    // ==============================================
+    ellipse(
+        110,
+        225,
+        7,
+        16,
+        "#c6ad8d",
+        null,
+        0
+    );
 
-    // Solo un pequeño moño en la parte superior
-    // para no tapar la cara del pug.
+    ellipse(
+        91,
+        230,
+        7,
+        17,
+        "#c6ad8d",
+        null,
+        0
+    );
+
+    ellipse(
+        72,
+        225,
+        7,
+        16,
+        "#c6ad8d",
+        null,
+        0
+    );
+
+
+    // ==================================================
+    // MOÑO
+    // ==================================================
 
     ctx.save();
 
-    ctx.translate(125, -205);
+    ctx.translate(120, -195);
     ctx.rotate(0.12);
 
-    // lado izquierdo
-    ctx.beginPath();
-
-    ctx.moveTo(0, 0);
-
-    ctx.bezierCurveTo(
-        -45, -30,
-        -75, -15,
-        -70, 20
-    );
-
-    ctx.bezierCurveTo(
-        -65, 45,
-        -25, 35,
-        0, 15
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#ff9fbd";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 6;
-    ctx.stroke();
-
-
-    // lado derecho
-    ctx.beginPath();
-
-    ctx.moveTo(0, 0);
-
-    ctx.bezierCurveTo(
-        45, -30,
-        75, -15,
-        70, 20
-    );
-
-    ctx.bezierCurveTo(
-        65, 45,
-        25, 35,
-        0, 15
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#ff9fbd";
-    ctx.fill();
-
-    ctx.strokeStyle = "#111";
-    ctx.lineWidth = 6;
-    ctx.stroke();
-
-
-    // centro
     ellipse(
+        -32,
         0,
-        8,
-        18,
+        42,
+        25,
+        "#ff9fbd",
+        "#171515",
+        5,
+        -0.2
+    );
+
+    ellipse(
+        32,
+        0,
+        42,
+        25,
+        "#ff9fbd",
+        "#171515",
+        5,
+        0.2
+    );
+
+    circle(
+        0,
+        0,
         18,
         "#ff719f",
-        "#111",
+        "#171515",
         5
     );
 
     ctx.restore();
+
+
+    // ==================================================
+    // SUELO
+    // ==================================================
+
+    line(
+        -230,
+        275,
+        230,
+        275,
+        7
+    );
 
 
     ctx.restore();
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // TEXTO
-// --------------------------------------------------
+// ==================================================
 
 function drawText() {
 
@@ -902,7 +741,6 @@ function drawText() {
     ctx.save();
 
     ctx.translate(W / 2, H * 0.82);
-
     ctx.scale(scale, scale);
 
     const gradient = ctx.createLinearGradient(
@@ -930,7 +768,6 @@ function drawText() {
     ctx.shadowBlur = 0;
 
     ctx.font = "20px Arial";
-
     ctx.fillStyle = "#777";
 
     ctx.fillText(
@@ -943,9 +780,9 @@ function drawText() {
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // CORAZONES
-// --------------------------------------------------
+// ==================================================
 
 function drawHearts() {
 
@@ -981,9 +818,9 @@ function drawHearts() {
 }
 
 
-// --------------------------------------------------
+// ==================================================
 // ANIMACIÓN
-// --------------------------------------------------
+// ==================================================
 
 function animate() {
 
@@ -1000,7 +837,5 @@ function animate() {
 
 animate();
 
-</script>
-
-</body>
+</script></body>
 </html>
